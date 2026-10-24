@@ -15,3 +15,5 @@ documents/*.pdf
 database/*.sqlite-journal
 database/*.sqlite-wal
 database/*.sqlite-shm
+
+log.txt
