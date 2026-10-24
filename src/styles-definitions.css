@@ -1,0 +1,44 @@
+.bootstrap-state { display: flex; min-height: 100vh; justify-content: center; align-items: center; flex-direction: column; gap: 20px; padding: 30px; text-align: center; color: var(--muted); }
+.bootstrap-state h1 { color: var(--ink); font-size: 24px; }
+.definition-filters { display: grid; grid-template-columns: 1fr .6fr 1fr; gap: 18px; padding: 23px; margin-bottom: 26px; }
+.definition-filters > div { min-width: 0; }
+.definition-filters label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.definition-filters select { margin-top: 0; min-height: 44px; font-size: 12px; }
+.search-field { display: flex; gap: 10px; align-items: center; background: var(--page); border: 1px solid var(--border); border-radius: 7px; padding: 0 12px; color: var(--muted); }
+.search-field input { border: 0; background: transparent; min-width: 0; width: 100%; height: 42px; color: var(--ink); font-size: 12px; outline-offset: 0; }
+.definition-table-wrap { overflow-x: auto; }
+.definition-table { width: 100%; border-collapse: collapse; text-align: left; }
+.definition-table thead { background: var(--sage-soft); color: var(--sage); }
+.definition-table th { font-weight: 600; }
+.definition-table thead th { padding: 17px 20px; font-size: 12px; }
+.definition-table th:first-child { width: 24%; }
+.definition-table thead th:nth-child(2) { width: 23%; }
+.definition-table tbody td, .definition-table tbody th { border-top: 1px solid var(--border); padding: 21px 20px; vertical-align: top; font-size: 13px; line-height: 1.9; overflow-wrap: anywhere; }
+.definition-table tbody td:first-child { color: var(--muted); font-size: 12px; }
+.definition-table small { display: block; color: var(--muted); font-size: 10px; line-height: 1.8; margin-top: 10px; }
+.definition-review-note { background: var(--terra-soft); color: var(--terra); border-left: 3px solid var(--terra); padding: 12px 14px; border-radius: 5px; font-size: 12px; line-height: 1.9; }
+.definition-table .definition-review-note { margin-top: 14px; font-size: 11px; }
+.flashcard-review-note { margin: 0 0 23px; }
+.definition-pagination { display: flex; gap: 15px; align-items: center; justify-content: space-between; margin-top: 22px; }
+.definition-pagination > span { color: var(--muted); font-size: 12px; }
+.extraction-note { font-size: 11px; line-height: 1.9; margin: 23px 0 0; color: var(--muted); }
+.definitions-link { display: inline-flex; margin: 0 0 23px; }
+.card-face-top .card-tag { max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-answer { font-size: clamp(17px, 1.6vw, 23px); line-height: 1.75; }
+.category-tags { min-height: 27px; }
+@media (max-width: 1000px) {
+  .definition-filters { grid-template-columns: 1fr 1fr; }
+  .definition-filters > div:first-child { grid-column: 1 / -1; }
+  .definition-table tbody td, .definition-table tbody th { padding: 17px 14px; font-size: 12px; }
+}
+@media (max-width: 700px) {
+  .definition-filters { padding: 19px; grid-template-columns: 1fr; }
+  .definition-table, .definition-table tbody, .definition-table tr, .definition-table tbody th, .definition-table tbody td { display: block; width: 100%; }
+  .definition-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .definition-table tbody tr + tr { border-top: 1px solid var(--border); }
+  .definition-table tbody tr { padding: 19px; }
+  .definition-table tbody td, .definition-table tbody th { padding: 7px 0; border: 0; font-size: 13px; }
+  .definition-table tbody td::before, .definition-table tbody th::before { content: attr(data-label); display: block; color: var(--muted); font-size: 10px; font-weight: 400; margin-bottom: 4px; }
+  .definition-table tbody td:first-child { font-size: 12px; }
+  .definition-pagination .button { padding: 9px 12px; font-size: 11px; }
+}

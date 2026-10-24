@@ -1,0 +1,18 @@
+[
+  {
+    "id": "sciences",
+    "name": "Sciences",
+    "description": "Explorer le vivant, la matière et les objets. Une notion après l’autre.",
+    "icon": "flask",
+    "color": "sage",
+    "note": "Le contenu scientifique sera ajouté à partir de votre PDF. Les cartes actuelles sont des exemples fictifs."
+  },
+  {
+    "id": "references",
+    "name": "Références",
+    "description": "Retrouver les repères et les références utiles à votre préparation.",
+    "icon": "library",
+    "color": "terracotta",
+    "note": "Ce domaine contient pour le moment un jeu fictif pour découvrir l’interface."
+  }
+]

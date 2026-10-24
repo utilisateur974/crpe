@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+artifacts/
+*.log
+.tools/
+__pycache__/
+*.pyc
+documents/*.pdf
+database/*.sqlite-journal
+database/*.sqlite-wal
+database/*.sqlite-shm

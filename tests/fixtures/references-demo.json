@@ -1,0 +1,30 @@
+[
+  {
+    "id": "demo-ref-01", "domain": "references", "category": "Repères", "subcategory": "Bibliothèque fictive",
+    "question": "Dans la bibliothèque fictive, quel carnet porte le code R1 ?", "answer": "Carnet Aurore",
+    "explanation": "Dans ce jeu de démonstration, le code R1 désigne le carnet Aurore. Ce carnet est imaginaire et n’est pas une référence du concours.",
+    "tags": ["Démonstration"], "source": "Bibliothèque fictive de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-ref-02", "demo-ref-03", "demo-ref-04"] }
+  },
+  {
+    "id": "demo-ref-02", "domain": "references", "category": "Repères", "subcategory": "Bibliothèque fictive",
+    "question": "Dans la bibliothèque fictive, quel carnet porte le code R2 ?", "answer": "Carnet Horizon",
+    "explanation": "Le code R2 correspond au carnet imaginaire Horizon. Cette association sert à tester le quiz.",
+    "tags": ["Démonstration"], "source": "Bibliothèque fictive de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-ref-01", "demo-ref-03", "demo-ref-04"] }
+  },
+  {
+    "id": "demo-ref-03", "domain": "references", "category": "Repères", "subcategory": "Bibliothèque fictive",
+    "question": "Dans la bibliothèque fictive, quel carnet porte le code R3 ?", "answer": "Carnet Escale",
+    "explanation": "Le code R3 correspond au carnet imaginaire Escale. Il ne s’agit pas d’un ouvrage réel.",
+    "tags": ["Démonstration"], "source": "Bibliothèque fictive de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-ref-01", "demo-ref-02", "demo-ref-04"] }
+  },
+  {
+    "id": "demo-ref-04", "domain": "references", "category": "Repères", "subcategory": "Bibliothèque fictive",
+    "question": "Dans la bibliothèque fictive, quel carnet porte le code R4 ?", "answer": "Carnet Rivage",
+    "explanation": "Le code R4 correspond au carnet imaginaire Rivage. Cette carte contient uniquement des données fictives.",
+    "tags": ["Démonstration"], "source": "Bibliothèque fictive de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-ref-01", "demo-ref-02", "demo-ref-03"] }
+  }
+]

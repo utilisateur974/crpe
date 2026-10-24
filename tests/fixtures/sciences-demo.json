@@ -1,0 +1,59 @@
+[
+  {
+    "id": "demo-sc-01", "domain": "sciences", "category": "Matière", "subcategory": "Jeu des symboles",
+    "question": "Fiche fictive « Alpha » : quel symbole lui est associé ?", "answer": "Cercle",
+    "explanation": "Dans ce jeu de test, la fiche Alpha est associée au cercle. Cette association est fictive et ne constitue pas une définition scientifique.",
+    "example": "Retenez simplement l’association Alpha → Cercle pour essayer le mode quiz.",
+    "tags": ["Démonstration", "Symboles"], "source": "Jeu fictif de démonstration — aucun contenu CRPE validé.", "demo": true,
+    "quiz": { "distractorIds": ["demo-sc-02", "demo-sc-03", "demo-sc-04"] }
+  },
+  {
+    "id": "demo-sc-02", "domain": "sciences", "category": "Matière", "subcategory": "Jeu des symboles",
+    "question": "Fiche fictive « Bêta » : quel symbole lui est associé ?", "answer": "Triangle",
+    "explanation": "Dans le jeu fictif, Bêta est associé au triangle. Cette carte sert uniquement à tester l’application.",
+    "tags": ["Démonstration"], "source": "Jeu fictif de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-sc-01", "demo-sc-03", "demo-sc-04"] }
+  },
+  {
+    "id": "demo-sc-03", "domain": "sciences", "category": "Matière", "subcategory": "Jeu des symboles",
+    "question": "Fiche fictive « Gamma » : quel symbole lui est associé ?", "answer": "Carré",
+    "explanation": "Dans le jeu fictif, Gamma est associé au carré. Il ne s’agit pas d’un contenu scientifique.",
+    "tags": ["Démonstration"], "source": "Jeu fictif de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-sc-01", "demo-sc-02", "demo-sc-04"] }
+  },
+  {
+    "id": "demo-sc-04", "domain": "sciences", "category": "Matière", "subcategory": "Jeu des symboles",
+    "question": "Fiche fictive « Delta » : quel symbole lui est associé ?", "answer": "Étoile",
+    "explanation": "Dans le jeu fictif, Delta est associé à l’étoile. L’association est un exemple de test.",
+    "tags": ["Démonstration"], "source": "Jeu fictif de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-sc-01", "demo-sc-02", "demo-sc-03"] }
+  },
+  {
+    "id": "demo-sc-05", "domain": "sciences", "category": "Vivant", "subcategory": "Jeu des couleurs",
+    "question": "Fiche fictive « Jardin A » : quelle couleur lui est associée ?", "answer": "Vert",
+    "explanation": "L’étiquette Jardin A est verte dans notre jeu fictif. Aucune connaissance sur le vivant n’est évaluée.",
+    "tags": ["Démonstration"], "source": "Jeu fictif de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-sc-06", "demo-sc-07", "demo-sc-08"] }
+  },
+  {
+    "id": "demo-sc-06", "domain": "sciences", "category": "Vivant", "subcategory": "Jeu des couleurs",
+    "question": "Fiche fictive « Jardin B » : quelle couleur lui est associée ?", "answer": "Bleu",
+    "explanation": "Dans ce jeu fictif, Jardin B porte une étiquette bleue.",
+    "tags": ["Démonstration"], "source": "Jeu fictif de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-sc-05", "demo-sc-07", "demo-sc-08"] }
+  },
+  {
+    "id": "demo-sc-07", "domain": "sciences", "category": "Vivant", "subcategory": "Jeu des couleurs",
+    "question": "Fiche fictive « Jardin C » : quelle couleur lui est associée ?", "answer": "Orange",
+    "explanation": "Dans ce jeu fictif, Jardin C porte une étiquette orange.",
+    "tags": ["Démonstration"], "source": "Jeu fictif de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-sc-05", "demo-sc-06", "demo-sc-08"] }
+  },
+  {
+    "id": "demo-sc-08", "domain": "sciences", "category": "Vivant", "subcategory": "Jeu des couleurs",
+    "question": "Fiche fictive « Jardin D » : quelle couleur lui est associée ?", "answer": "Violet",
+    "explanation": "Dans ce jeu fictif, Jardin D porte une étiquette violette.",
+    "tags": ["Démonstration"], "source": "Jeu fictif de démonstration.", "demo": true,
+    "quiz": { "distractorIds": ["demo-sc-05", "demo-sc-06", "demo-sc-07"] }
+  }
+]
