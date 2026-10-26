@@ -7,6 +7,8 @@ import App from './App'
 import { initializeContent } from './services/database'
 import './styles.css'
 import './styles-definitions.css'
+import './styles-quiz.css'
+import './styles-references.css'
 
 const root = createRoot(document.getElementById('root')!)
 root.render(<div className="bootstrap-state" role="status">Chargement de vos définitions…</div>)

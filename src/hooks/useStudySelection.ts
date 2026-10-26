@@ -11,5 +11,6 @@ export function useStudySelection() {
   const status = params.get('statut')
   const deck = filterCards(bank, params.get('categorie') ?? '', params.get('sous-categorie') ?? '')
     .filter(card => !status || progress.cards[card.id]?.status === status)
+    .filter(card => !params.get('reference') || card.id === params.get('reference'))
   return { domain, bank, deck, sessionKey: `${domainId}:${params.toString()}`, backUrl: `/domaine/${domainId}${params.size ? `?${params}` : ''}` }
 }

@@ -1,0 +1,19 @@
+.quiz-correction h3 { font-size: 13px; line-height: 1.7; margin: 24px 0 14px; }
+.quiz-correct-answer { overflow-wrap: anywhere; }
+.quiz-explanations { padding: 0; margin: 0; list-style: none; display: grid; gap: 10px; }
+.quiz-explanations li { display: flex; align-items: flex-start; gap: 12px; padding: 15px; background: var(--surface); border: 1px solid var(--border); border-radius: 9px; }
+.quiz-explanations li.is-correct { border-color: var(--sage); }
+.quiz-explanations li > div { flex: 1; min-width: 0; }
+.quiz-explanation-title { display: flex; align-items: center; flex-wrap: wrap; gap: 7px 10px; font-size: 12px; line-height: 1.7; }
+.quiz-explanation-title b { font-weight: 600; color: var(--ink); }
+.quiz-explanations p { overflow-wrap: anywhere; margin-top: 6px; }
+.quiz-answer-badge, .quiz-selection-badge { font-size: 9px; font-weight: 550; padding: 2px 7px; border-radius: 4px; }
+.quiz-answer-badge { background: var(--sage-soft); color: var(--sage); }
+.quiz-selection-badge { background: var(--page); color: var(--muted); border: 1px solid var(--border); }
+.quiz-option { align-items: flex-start; }
+.quiz-option .option-letter { margin-top: 2px; }
+.quiz-option > svg { margin-top: 6px; }
+@media (max-width: 700px) {
+  .quiz-explanations li { padding: 12px; gap: 9px; }
+  .quiz-explanations .option-letter { width: 25px; height: 25px; }
+}

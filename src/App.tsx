@@ -8,7 +8,8 @@ import { QuizPage } from './pages/QuizPage'
 import { ProgressPage } from './pages/ProgressPage'
 import { MethodPage } from './pages/MethodPage'
 import { DefinitionsPage } from './pages/DefinitionsPage'
+import { ReferencesPage } from './pages/ReferencesPage'
 
 export default function App() {
-  return <Routes><Route element={<Layout />}><Route index element={<HomePage />} /><Route path="definitions" element={<DefinitionsPage />} /><Route path="domaine/:domainId" element={<DomainPage />} /><Route path="domaine/:domainId/flashcards" element={<FlashcardsPage />} /><Route path="domaine/:domainId/quiz" element={<QuizPage />} /><Route path="progression" element={<ProgressPage />} /><Route path="methode" element={<MethodPage />} /><Route path="*" element={<EmptyState title="Cette page est introuvable.">Revenez à votre espace pour poursuivre vos révisions.</EmptyState>} /></Route></Routes>
+  return <Routes><Route element={<Layout />}><Route index element={<HomePage />} /><Route path="definitions" element={<DefinitionsPage />} /><Route path="references" element={<ReferencesPage />} /><Route path="domaine/:domainId" element={<DomainPage />} /><Route path="domaine/:domainId/flashcards" element={<FlashcardsPage />} /><Route path="domaine/:domainId/quiz" element={<QuizPage />} /><Route path="progression" element={<ProgressPage />} /><Route path="methode" element={<MethodPage />} /><Route path="*" element={<EmptyState title="Cette page est introuvable.">Revenez à votre espace pour poursuivre vos révisions.</EmptyState>} /></Route></Routes>
 }

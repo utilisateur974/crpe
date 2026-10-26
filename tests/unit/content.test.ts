@@ -48,6 +48,14 @@ describe('Quiz sans génération pédagogique', () => {
   it('autorise une sélection d’une carte avec ses distracteurs approuvés dans la banque', () => {
     expect(buildQuiz([cards[0]], cards)).toHaveLength(1)
   })
+  it('écarte les notions identiques, les doublons d’espaces et les distracteurs à vérifier', () => {
+    const sameConcept = cards.map(card => card.id === 'demo-sc-02' ? { ...card, concept: 'Alpha' } : card)
+    expect(getQuizOptions({ ...scienceCard, concept: 'Alpha' }, sameConcept)).toBeNull()
+    const flagged = cards.map(card => card.id === 'demo-sc-02' ? { ...card, reviewNote: 'À vérifier' } : card)
+    expect(getQuizOptions(scienceCard, flagged)).toBeNull()
+    const spacing = cards.map(card => card.id === 'demo-sc-02' ? { ...card, answer: 'première   réponse' } : card)
+    expect(getQuizOptions({ ...scienceCard, answer: 'première réponse' }, spacing)).toBeNull()
+  })
 })
 
 describe('Mélange', () => {

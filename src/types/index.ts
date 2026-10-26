@@ -23,9 +23,26 @@ export type Card = {
   concept?: string
   reviewNote?: string
   quiz?: { distractorIds: string[] }
+  reference?: LiteraryReference
 }
 
 export type CardStatus = 'known' | 'review'
+export type LiteraryReference = {
+  id: string
+  domain: string
+  title: string
+  creator: string
+  referenceText: string
+  analysisText: string | null
+  themes: string[]
+  source: string
+  sourceFilename: string
+  sheetName: string
+  sourceRow: number
+  originalLabel: string
+  originalText: string | null
+  isComplete: boolean
+}
 export type Definition = {
   id: string
   domain: string
@@ -53,4 +70,5 @@ export type Progress = {
   quizzes: QuizResult[]
   lastReviewedAt: string | null
 }
-export type QuizQuestion = { card: Card; options: { id: string; answer: string }[] }
+export type QuizOption = { id: string; answer: string; concept: string; source?: string }
+export type QuizQuestion = { card: Card; options: QuizOption[] }

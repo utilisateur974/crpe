@@ -4,6 +4,8 @@ Application en français avec React, TypeScript, Vite, Tailwind CSS, Motion, Rea
 
 Le PDF *Le corps humain et la santé* a été intégré : **120 notions dans 17 chapitres**, issues des encadrés « À retenir ». Les 118 entrées donnent 120 notions après séparation des trois rôles des nutriments. Les textes sont conservés avec leur page et leur extrait d’origine. Une incohérence du livret sur le glucagon (page 39) est signalée dans l’interface.
 
+Le classeur `référence.xlsx` fournit aussi **16 références littéraires et artistiques** : titre, auteur/réalisateur, présentation « On peut également penser… », interprétation « Cette référence montre que… » et thèmes. Les 3 entrées incomplètes sont signalées, sans ajout de développement absent du classeur.
+
 ## Lancer le projet
 
 Node.js 22.13 ou supérieur (Node 24 recommandé), npm.
@@ -29,13 +31,14 @@ La compilation vérifie TypeScript, puis produit `dist/`. Le serveur de prévisu
 
 - Tableau de bord, domaines Sciences et Références, statistiques.
 - **Mes définitions** (`/definitions`) : colonnes « Titre du chapitre », « Nom / concept », « Définition », recherche sans sensibilité aux accents, filtres et pagination.
+- **Mes références** (`/references`) : titres et signatures, deux parties du développement, filtres d’auteur/réalisateur, thème et état du contenu, provenance Excel et accès aux flashcards.
 - Domaine Sciences : filtres de catégorie (titre de chapitre), sous-catégorie (rubrique thématique du livret) et maîtrise.
 - Flashcards 3D : concept au recto, définition et source au verso, précédent/suivant, mélange, « Je connais » et « À revoir », bilan de série.
 - Raccourcis flashcards : Espace pour retourner, flèches gauche/droite pour naviguer. Les boutons et champs gardent leurs commandes natives.
-- Quiz : correction immédiate, score, historique et reprise des erreurs **lorsque des distracteurs validés sont disponibles**.
+- Quiz : **108 questions à quatre choix**, correction immédiate, correspondance de chaque proposition avec sa notion et sa page source, score, historique et reprise des erreurs.
 - Thème clair/sombre persistant, navigation clavier, affichage ordinateur/mobile, respect du mouvement réduit.
 
-**Aucun QCM n’est fabriqué à partir de définitions sans distracteurs explicitement validés.** Le livret importé est donc utilisable en consultation et flashcards ; son quiz reste indisponible. Le domaine Références est conservé sans données fictives.
+Chaque question demande quelle définition correspond à une notion. La bonne réponse et les trois autres définitions proviennent intégralement du livret. Les 324 associations de distracteurs sont enregistrées dans SQLite par la migration `003-quiz-associations.sql` ; les questions et l’ordre des propositions sont mélangés à chaque série. Les propositions sont choisies dans le même chapitre, ou dans un chapitre proche lorsque cela permet d’éviter des sous-définitions également justes. Les 12 notions non retenues pour le QCM, dont le glucagon signalé, restent disponibles en flashcards. Le domaine Références est conservé sans données fictives.
 
 ## Base de données
 
@@ -53,6 +56,8 @@ La base conserve aussi le domaine, la rubrique, l’ordre, la page PDF, le numé
 
 Voir **[database/README.md](database/README.md)** pour la liste des chapitres, le schéma, la méthode d’extraction et les commandes de reproduction.
 
+Voir **[database/references-litteraires.md](database/references-litteraires.md)** pour la source des 16 références, les textes incomplets, les tables SQLite et la reproduction de l’import Excel. Le domaine Références dispose maintenant de 16 flashcards dont le recto présente le titre et la signature, et le verso les deux parties du texte.
+
 ```powershell
 npm.cmd run db:migrate
 ```
@@ -63,7 +68,7 @@ Pour ajouter un domaine, insérer une ligne dans `domains` via une nouvelle migr
 
 Pour ajouter des cartes, insérer les chapitres dans `chapters`, la provenance dans `sources`, puis les notions dans `definitions`. Garder des identifiants stables pour conserver la progression. Les cartes sont dérivées des concepts et définitions, sans réécriture du texte pédagogique.
 
-Pour autoriser un QCM, référencer au moins trois autres définitions pertinentes du même domaine dans `quiz_distractors`. La rédaction doit vérifier qu’une seule proposition répond à la question. Les références absentes, les réponses identiques, les autres domaines et les notions marquées à vérifier sont écartés. Aucun distracteur n’est généré automatiquement.
+Pour autoriser un QCM, référencer au moins trois autres définitions pertinentes du même domaine dans `quiz_distractors`. La rédaction doit vérifier qu’une seule proposition répond à la question. Les références absentes, les réponses ou notions identiques, les autres domaines et les textes marqués à vérifier sont écartés. Aucun texte de distracteur n’est généré automatiquement. Les filtres sélectionnent les questions ; les trois distracteurs associés sont toujours lus dans la banque complète du domaine, y compris pour une sélection d’une seule question.
 
 Les modifications de contenu se font dans la base du projet, puis nécessitent une nouvelle compilation et un déploiement. Le site consulte la base en lecture seule.
 
@@ -92,6 +97,8 @@ tests/
 
 Le PDF local est conservé dans `documents/corps-humain-sante.pdf`, exclu de Git et du déploiement. Son import initial est reproductible ; les nouveaux PDF peuvent demander un profil d’extraction différent.
 
+Le classeur local est conservé dans `documents/references-litteraires.xlsx`, également exclu de Git. Les textes importés sont conservés dans SQLite. Les nouveaux classeurs peuvent demander un profil d’import différent.
+
 ## Progression
 
 Clé `localStorage` : `crpe-progress-v1`. Elle conserve les cartes consultées horodatées, la maîtrise, les cartes à revoir, les scores de quiz, les erreurs et la dernière date de révision. Le thème utilise `crpe-theme`.
@@ -107,7 +114,7 @@ npx.cmd playwright install chromium
 npm.cmd run test:e2e
 ```
 
-Playwright lance Vite et vérifie la lecture de SQLite, les trois colonnes, les 120 notions, les filtres, la recherche, les sources, la note sur le glucagon, les flashcards, la sauvegarde, le thème et le traitement d’une base indisponible. Les captures sont dans `artifacts/` et les traces d’échec dans `test-results/`.
+Playwright lance Vite et vérifie la lecture de SQLite, les trois colonnes, les 120 notions, les filtres, la recherche, les sources, la note sur le glucagon, les flashcards, la sauvegarde, le thème et le traitement d’une base indisponible. Il vérifie aussi les quatre choix du quiz, la correction et les notions correspondantes, le score, la reprise des seules erreurs et la persistance des résultats. Les captures sont dans `artifacts/` et les traces d’échec dans `test-results/`.
 
 Pour vérifier aussi les fichiers SQLite et WebAssembly de production, compiler puis définir `$env:PLAYWRIGHT_PRODUCTION = '1'` avant `npm.cmd run test:e2e`. Le serveur de test utilise alors `vite preview` sur le port 4173.
 

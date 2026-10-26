@@ -2,6 +2,8 @@
 
 La source applicative est **`crpe.sqlite`**, une base SQLite réelle. Les fichiers JSON fictifs de la première version sont conservés dans `tests/fixtures/` et ne sont plus importés par l’application.
 
+La base contient également **16 références littéraires et artistiques** issues du classeur fourni, dans des tables dédiées. Leurs deux parties, thèmes, textes originaux et lignes de provenance sont décrits dans [references-litteraires.md](references-litteraires.md). Les trois interprétations manquantes restent à compléter. Le schéma est en version 2 et contient 136 cartes au total : 120 notions scientifiques et 16 références.
+
 ## Contenu importé
 
 - Livret fourni : *Sciences et technologie — Le corps humain et la santé*, Objectif CRPE, fichier nommé `17_06_2026.pdf` par l’utilisateur.
@@ -49,7 +51,7 @@ La structure relationnelle conserve aussi la provenance :
 - `chapters` : titre, rubrique thématique du livret, ordre, domaine.
 - `definitions` : concept, définition, chapitre, page, numéro de puce, extrait original et éventuelle note de vérification.
 - `sources` : titre du document, nom de fichier, empreinte SHA-256 et nombre de pages.
-- `quiz_distractors` : associations explicites de distracteurs. **Aucune n’est ajoutée pour ce livret.**
+- `quiz_distractors` : **324 associations explicites de distracteurs pour 108 questions** du livret, ajoutées par `003-quiz-associations.sql`.
 - `migrations` : historique et empreintes des migrations appliquées.
 
 ## Fidélité de l’extraction
@@ -59,6 +61,20 @@ Les retours à la ligne, espaces multiples et caractères invisibles d’extract
 **Point signalé, sans correction silencieuse :** à la page 39, le texte du glucagon contient « hormone hypoglycémiante » tout en décrivant une libération de glucose. La formulation originale reste en base et `review_note` signale l’incohérence. Cette note apparaît dans la consultation et dans les flashcards. L’extraction n’est pas une validation scientifique du livret.
 
 ## Mettre à jour la base
+
+### Questions à quatre choix
+
+La migration `003-quiz-associations.sql` associe chaque notion retenue à trois autres définitions du livret. Les textes de définition restent inchangés. Les associations sont explicites et ont été choisies d’après les formulations de la source ; aucun tirage arbitraire de distracteurs n’est effectué au lancement d’un quiz.
+
+Les 17 chapitres disposent de questions. Les associations restent principalement dans le même chapitre. Pour des notions générales comme le placenta ou la contraception, elles utilisent parfois des notions de chapitres proches afin de ne pas proposer comme fausse réponse une description partielle également applicable à la notion demandée.
+
+Exemple : **Neurone** a pour distracteurs **Cerveau**, **Moelle épinière** et **Système nerveux périphérique (SNP)**. Après une réponse, les quatre définitions sont accompagnées de leur notion et de leur page source, dans le même ordre que les propositions.
+
+Les douze notions suivantes ne sont pas proposées comme questions : Lien respiration–circulation ; Rôle de la circulation ; Fonction du système nerveux ; Comparaison (réflexe/volontaire) ; Fonction commune des systèmes reproducteurs ; Embryogenèse précoce ; Absence de refus et consentement ; Consentement et intégrité de la personne ; Principe immunitaire de la vaccination ; Lien système nerveux / hormonal ; Régulation de la glycémie ; Glucagon. Les formulations générales ou qui recouvrent d’autres propositions sont conservées en flashcards. Le glucagon, marqué à vérifier, est également exclu de tous les distracteurs.
+
+Les tests contrôlent les références, l’unicité des quatre réponses, la conservation exacte des textes et des sources, la présence d’une seule réponse ciblée et l’exclusion des notes de vérification. Ces contrôles structurels complètent le choix éditorial des associations ; ils ne constituent pas une validation scientifique indépendante du livret.
+
+### Migrations
 
 ```powershell
 npm.cmd run db:migrate
