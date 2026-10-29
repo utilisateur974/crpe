@@ -8,7 +8,7 @@ La copie de travail est `documents/references_CRPE_enrichies_word_ghibli.xlsx`, 
 
 - `006-replace-literary-references-schema.sql` supprime la vue et les tables littéraires dépendantes, puis recrée `literary_sources`, `literary_references`, `literary_reference_themes` et `literary_reference_catalog`.
 - `007-enriched-literary-references-data.sql` importe uniquement le nouveau classeur.
-- Le schéma passe en version 3. Les anciennes migrations restent dans l’historique pour permettre la reconstruction de la base ; leurs anciennes références ne figurent plus dans les tables actives.
+- Le schéma de remplacement passe en version 3, puis la migration `008-reference-quiz.sql` le fait passer en version 4 en ajoutant `literary_quiz_distractors`. Les anciennes migrations restent dans l’historique pour permettre la reconstruction de la base ; leurs anciennes références ne figurent plus dans les tables actives.
 - Une sauvegarde locale préalable est conservée dans `artifacts/backups/`.
 - Les données scientifiques et leurs associations de quiz restent identiques à la sauvegarde.
 
@@ -57,7 +57,21 @@ Les extraits et leurs attributions sont importés du classeur, sans vérificatio
 
 `/references` affiche le titre, la signature, la date, les thèmes, les deux parties du développement, l’extrait et sa source, ainsi que la provenance Excel. La recherche couvre aussi les dates et les extraits. Les filtres d’auteur/réalisateur, de thème et d’état du développement restent disponibles.
 
-Le domaine Références fournit 170 flashcards. Chaque variante possède sa propre progression. Les sciences conservent leurs 120 cartes et leurs 108 questions QCM. Aucun QCM n’est fabriqué à partir des références littéraires.
+Le domaine Références fournit **170 flashcards et 170 questions de quiz**. La question reprend exactement la colonne B « Phrase réutilisable » et la colonne D « Réplique / extrait – locuteur + phrase complète ». En flashcards, ces deux textes sont au recto ; la colonne A « Référence » (titre, auteur/réalisateur, date) apparaît au verso. Dans le quiz, cette même colonne A constitue la bonne réponse parmi quatre propositions.
+
+Les noms d’œuvres déjà présents dans la phrase source sont conservés, conformément au contenu demandé ; aucun masquage ni reformulation ne modifie ces cellules. Les mentions « À compléter » et « Aucun locuteur » sont également conservées.
+
+Chaque variante reste une question distincte et conserve sa progression. Les 510 associations de `literary_quiz_distractors` choisissent des œuvres existantes en privilégiant les thèmes communs, avec quatre œuvres et quatre signatures distinctes pour chaque question. Les répétitions de la même œuvre ne peuvent donc pas être utilisées comme fausses réponses. Les filtres sélectionnent les questions ; la banque complète du domaine fournit leurs distracteurs, y compris pour une seule question sélectionnée. Le mélange porte sur l’ordre des questions et des quatre propositions.
+
+Après une réponse, la correction indique la référence complète et la ligne Excel ; le score et les erreurs sont conservés. La reprise des seules erreurs utilise la même orientation. Les sciences conservent leurs 120 cartes et leurs 108 questions QCM.
+
+Les associations se reproduisent sans modifier la base avec :
+
+```powershell
+python -X utf8 scripts/prepare_reference_quiz.py --output artifacts/extraction/reference-quiz-verifie.sql
+```
+
+Pour un nouveau remplacement des tables littéraires, tenir compte de cette nouvelle table dépendante et préparer les nouveaux distracteurs dans la même évolution des données.
 
 ## Reproduire l’import
 

@@ -37,6 +37,18 @@
 .flashcard-reference-creator { display: block; margin-top: 15px; color: var(--muted); font-size: 15px; font-weight: 400; letter-spacing: 0; }
 .reference-flashcard .reference-passages { font-size: 14px; }
 .reference-flashcard .card-answer-content { padding-top: 24px; }
+.reference-recall-prompt { display: grid; gap: 20px; text-align: left; font-size: 14px; line-height: 1.9; overflow-wrap: anywhere; }
+.reference-recall-block, .reference-recall-phrase, .reference-recall-excerpt-text { display: block; white-space: pre-wrap; }
+.reference-recall-block > strong { display: block; color: var(--terra); font-size: 11px; line-height: 1.7; margin-bottom: 8px; }
+.reference-recall-excerpt { padding: 15px 17px; background: var(--sage-soft); border-radius: 8px; }
+.reference-recall-excerpt > strong { color: var(--sage); }
+.reference-flashcard .card-question-content { display: block; flex: 1; min-height: 0; overflow-y: auto; margin-top: 22px; padding-right: 5px; }
+.reference-flashcard .card-back .card-answer-content { display: flex; flex-direction: column; justify-content: center; }
+.reference-flashcard .card-answer { text-align: center; }
+#reference-quiz-prompt { margin: 0 0 28px; padding-bottom: 26px; border-bottom: 1px solid var(--border); }
+@media (max-width: 700px) {
+  .reference-recall-prompt { font-size: 13px; }
+}
 .reference-completion-notice { font-size: 11px; line-height: 1.9; padding: 12px 15px; border-radius: 7px; background: var(--terra-soft); color: var(--terra); margin-bottom: 20px; }
 @media (max-width: 950px) {
   .reference-filters { grid-template-columns: 1fr; }

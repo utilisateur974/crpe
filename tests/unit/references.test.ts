@@ -4,7 +4,8 @@ import { DatabaseSync } from 'node:sqlite'
 import initSqlJs from 'sql.js'
 import { readDatabaseContent } from '../../src/services/database-reader'
 import type { DatabaseContent } from '../../src/services/database-reader'
-import { buildQuiz } from '../../src/services/quiz'
+import { buildQuiz, getQuizOptions, getQuizPrompt } from '../../src/services/quiz'
+import { getReferenceQuestion, getReferenceWorkKey } from '../../src/services/reference-revision'
 
 let content: DatabaseContent
 beforeAll(async () => {
@@ -51,16 +52,41 @@ describe('Source des références littéraires', () => {
     expect(content.references.find(item => item.title === 'Guernica')?.themes).toContain('transformation du réel')
     expect(content.references.every(item => item.themes.length > 0)).toBe(true)
   })
-  it('restitue les références en flashcards sans fabriquer de quiz', () => {
+  it('affiche phrase et extrait au recto et la référence complète au verso', () => {
     const cards = content.cards.filter(card => card.domain === 'references')
     expect(cards).toHaveLength(170)
     for (const card of cards) {
-      expect(card.reference?.title).toBe(card.question)
-      expect(card.reference?.referenceText).toBe(card.answer)
-      expect(card.explanation ?? null).toBe(card.reference?.analysisText)
+      expect(card.question).toBe(getReferenceQuestion(card.reference!))
+      expect(card.question).toContain(card.reference!.originalText)
+      expect(card.question).toContain(card.reference!.excerptText)
+      expect(card.answer).toBe(card.reference?.originalLabel)
+      expect(card.explanation).toBeUndefined()
       expect(card.source).toContain(`ligne ${card.reference?.sourceRow}`)
     }
-    expect(buildQuiz(cards, content.cards)).toEqual([])
+    expect(buildQuiz(cards, content.cards)).toHaveLength(170)
+  })
+  it('propose quatre œuvres existantes distinctes et exclut les variantes de la bonne réponse', () => {
+    const questions = buildQuiz(content.cards.filter(card => card.reference), content.cards)
+    expect(questions).toHaveLength(170)
+    for (const { card, options } of questions) {
+      expect(getQuizPrompt(card)).toBe('À quelle référence correspondent ces éléments ?')
+      expect(options).toHaveLength(4)
+      expect(new Set(options.map(option => option.answer)).size).toBe(4)
+      expect(options.filter(option => option.id === card.id)).toHaveLength(1)
+      const originals = options.map(option => content.cards.find(item => item.id === option.id)!)
+      expect(new Set(originals.map(item => getReferenceWorkKey(item.reference!))).size).toBe(4)
+      expect(new Set(originals.map(item => item.reference!.creator)).size).toBe(4)
+      for (const option of options) expect(option.answer).toBe(content.references.find(item => item.id === option.id)?.originalLabel)
+    }
+  })
+  it('conserve quatre choix pour une seule question sélectionnée et refuse une variante comme distracteur', () => {
+    const [card] = content.cards.filter(item => item.reference?.title === 'Princesse Mononoké')
+    expect(buildQuiz([card], content.cards)).toHaveLength(1)
+    const firstDistractor = card.quiz!.distractorIds[0]
+    const invalidBank = content.cards.map(item => item.id === firstDistractor ? {
+      ...item, reference: { ...item.reference!, title: card.reference!.title, creator: card.reference!.creator },
+    } : item)
+    expect(getQuizOptions(card, invalidBank)).toBeNull()
   })
   it('conserve les variantes argumentatives d’une même œuvre', () => {
     expect(new Set(content.references.map(item => `${item.title}|${item.creator}|${item.publicationDate}`)).size).toBe(146)

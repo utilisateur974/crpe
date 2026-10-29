@@ -33,9 +33,9 @@ La compilation vérifie TypeScript, puis produit `dist/`. Le serveur de prévisu
 - **Mes définitions** (`/definitions`) : colonnes « Titre du chapitre », « Nom / concept », « Définition », recherche sans sensibilité aux accents, filtres et pagination.
 - **Mes références** (`/references`) : titres et signatures, deux parties du développement, filtres d’auteur/réalisateur, thème et état du contenu, provenance Excel et accès aux flashcards.
 - Domaine Sciences : filtres de catégorie (titre de chapitre), sous-catégorie (rubrique thématique du livret) et maîtrise.
-- Flashcards 3D : concept au recto, définition et source au verso, précédent/suivant, mélange, « Je connais » et « À revoir », bilan de série.
+- Flashcards 3D : notion → définition pour les sciences ; **phrase réutilisable + extrait → référence** pour les références littéraires. Navigation, mélange, « Je connais », « À revoir » et bilan de série.
 - Raccourcis flashcards : Espace pour retourner, flèches gauche/droite pour naviguer. Les boutons et champs gardent leurs commandes natives.
-- Quiz : **108 questions à quatre choix**, correction immédiate, correspondance de chaque proposition avec sa notion et sa page source, score, historique et reprise des erreurs.
+- Quiz : **108 questions de sciences et 170 questions de références**, à quatre choix, avec correction immédiate, score sauvegardé et reprise des erreurs.
 - Thème clair/sombre persistant, navigation clavier, affichage ordinateur/mobile, respect du mouvement réduit.
 
 Chaque question demande quelle définition correspond à une notion. La bonne réponse et les trois autres définitions proviennent intégralement du livret. Les 324 associations de distracteurs sont enregistrées dans SQLite par la migration `003-quiz-associations.sql` ; les questions et l’ordre des propositions sont mélangés à chaque série. Les propositions sont choisies dans le même chapitre, ou dans un chapitre proche lorsque cela permet d’éviter des sous-définitions également justes. Les 12 notions non retenues pour le QCM, dont le glucagon signalé, restent disponibles en flashcards. Le domaine Références est conservé sans données fictives.
@@ -56,7 +56,7 @@ La base conserve aussi le domaine, la rubrique, l’ordre, la page PDF, le numé
 
 Voir **[database/README.md](database/README.md)** pour la liste des chapitres, le schéma, la méthode d’extraction et les commandes de reproduction.
 
-Voir **[database/references-litteraires.md](database/references-litteraires.md)** pour la source des 170 fiches, les textes incomplets, les tables SQLite et la reproduction de l’import Excel. Le domaine Références dispose de 170 flashcards : titre, signature et date au recto ; présentation, interprétation, extrait et source au verso.
+Voir **[database/references-litteraires.md](database/references-litteraires.md)** pour la source des 170 fiches, les textes incomplets, les tables SQLite et la reproduction de l’import Excel. Les 170 flashcards de références affichent exactement la colonne « Phrase réutilisable » et la colonne « Réplique / extrait – locuteur + phrase complète » au recto ; le verso révèle la colonne « Référence » complète (œuvre, signature, date). Le quiz pose la même question et propose quatre références du classeur.
 
 ```powershell
 npm.cmd run db:migrate
@@ -69,6 +69,8 @@ Pour ajouter un domaine, insérer une ligne dans `domains` via une nouvelle migr
 Pour ajouter des cartes, insérer les chapitres dans `chapters`, la provenance dans `sources`, puis les notions dans `definitions`. Garder des identifiants stables pour conserver la progression. Les cartes sont dérivées des concepts et définitions, sans réécriture du texte pédagogique.
 
 Pour autoriser un QCM, référencer au moins trois autres définitions pertinentes du même domaine dans `quiz_distractors`. La rédaction doit vérifier qu’une seule proposition répond à la question. Les références absentes, les réponses ou notions identiques, les autres domaines et les textes marqués à vérifier sont écartés. Aucun texte de distracteur n’est généré automatiquement. Les filtres sélectionnent les questions ; les trois distracteurs associés sont toujours lus dans la banque complète du domaine, y compris pour une sélection d’une seule question.
+
+Les quiz littéraires utilisent la table distincte `literary_quiz_distractors`, remplie par la migration `008-reference-quiz.sql` (510 associations). Les trois propositions incorrectes sont des références existantes, choisies par proximité des thèmes. Les variantes d’une même œuvre et les signatures identiques sont exclues des quatre choix. Le script `scripts/prepare_reference_quiz.py` permet de reproduire ces associations ; il ne rédige aucun texte pédagogique.
 
 Les modifications de contenu se font dans la base du projet, puis nécessitent une nouvelle compilation et un déploiement. Le site consulte la base en lecture seule.
 

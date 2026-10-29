@@ -1,6 +1,7 @@
 import type { Database } from 'sql.js'
 import type { Card, Definition, Domain, LiteraryReference } from '../types'
 import { validateContent } from './content-validation'
+import { getReferenceQuestion } from './reference-revision'
 
 export type DatabaseContent = { domains: Domain[]; cards: Card[]; definitions: Definition[]; references: LiteraryReference[] }
 
@@ -10,12 +11,13 @@ function rows(database: Database, query: string) {
 }
 
 export function readDatabaseContent(database: Database): DatabaseContent {
-  if (database.exec('PRAGMA user_version')[0]?.values[0][0] !== 3) throw new Error('Version de base de données incompatible. Appliquer les migrations du projet.')
+  if (database.exec('PRAGMA user_version')[0]?.values[0][0] !== 4) throw new Error('Version de base de données incompatible. Appliquer les migrations du projet.')
   const domainRows = rows(database, 'SELECT id, name, description, icon, color, note FROM domains ORDER BY position, id')
   const definitionRows = rows(database, 'SELECT * FROM definition_catalog ORDER BY chapter_position, position, id')
   const distractorRows = rows(database, 'SELECT definition_id, distractor_id FROM quiz_distractors ORDER BY definition_id, position')
   const referenceRows = rows(database, 'SELECT * FROM literary_reference_catalog ORDER BY position, id')
   const themeRows = rows(database, 'SELECT reference_id, theme FROM literary_reference_themes ORDER BY reference_id, position')
+  const referenceDistractors = rows(database, 'SELECT reference_id, distractor_id FROM literary_quiz_distractors ORDER BY reference_id, position')
   const references: LiteraryReference[] = referenceRows.map(row => ({
     id: String(row.id), domain: String(row.domain_id), title: String(row.title), creator: String(row.creator),
     publicationDate: String(row.publication_date),
@@ -46,13 +48,17 @@ export function readDatabaseContent(database: Database): DatabaseContent {
       ...(distractorIds.length ? { quiz: { distractorIds } } : {}),
     }
   })
-  const referenceCards: Card[] = references.map(reference => ({
-    id: reference.id, domain: reference.domain, category: 'Références littéraires et artistiques',
-    subcategory: reference.themes[0] ?? 'Sans thème', question: reference.title,
-    answer: reference.referenceText, ...(reference.analysisText ? { explanation: reference.analysisText } : {}),
-    tags: reference.themes, source: `${reference.source} — ${reference.sheetName}, ligne ${reference.sourceRow}`,
-    reference,
-  }))
+  const referenceCards: Card[] = references.map(reference => {
+    const distractorIds = referenceDistractors.filter(row => row.reference_id === reference.id).map(row => String(row.distractor_id))
+    return {
+      id: reference.id, domain: reference.domain, category: 'Références littéraires et artistiques',
+      subcategory: reference.themes[0] ?? 'Sans thème', question: getReferenceQuestion(reference),
+      answer: reference.originalLabel,
+      ...(distractorIds.length ? { quiz: { distractorIds } } : {}),
+      tags: reference.themes, source: `${reference.source} — ${reference.sheetName}, ligne ${reference.sourceRow}`,
+      reference,
+    }
+  })
   const validDomains = domainRows.map(row => ({ ...row, ...(row.note === null ? { note: undefined } : {}) }))
   const validated = validateContent(validDomains, [...scienceCards, ...referenceCards])
   return { ...validated, definitions, references }

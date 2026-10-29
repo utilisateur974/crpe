@@ -3,6 +3,12 @@ import type { QuizQuestion } from '../types'
 
 export function QuizCorrection({ question, selectedId }: { question: QuizQuestion; selectedId: string }) {
   const correct = selectedId === question.card.id
+  if (question.card.reference) return <section className={`quiz-correction ${correct ? 'success' : 'error'}`} aria-label="Correction de la question">
+    <div role="status"><strong>{correct ? <Check size={19} /> : <CircleX size={19} />}{correct ? 'Bonne réponse !' : 'Ce n’est pas la bonne référence.'}</strong>
+      <p className="quiz-correct-answer"><b>Référence :</b> {question.card.answer}</p>
+    </div>
+    {question.card.source && <small>Source : {question.card.source}</small>}
+  </section>
   return <section className={`quiz-correction ${correct ? 'success' : 'error'}`} aria-label="Correction de la question">
     <div role="status">
       <strong>{correct ? <Check size={19} /> : <CircleX size={19} />}{correct ? 'Bonne réponse !' : 'Ce n’est pas la bonne définition.'}</strong>

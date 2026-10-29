@@ -37,7 +37,7 @@ describe('Base SQLite des définitions', () => {
     expect(content.cards.find(card => card.id === glucagon.id)?.reviewNote).toBe(glucagon.reviewNote)
   })
   it('charge les 108 associations préparées et garde quatre réponses issues du livret', () => {
-    const questions = buildQuiz(content.cards, content.cards)
+    const questions = buildQuiz(content.cards.filter(card => card.domain === 'sciences'), content.cards)
     expect(questions).toHaveLength(108)
     expect(new Set(questions.map(question => question.card.category)).size).toBe(17)
     for (const { card, options } of questions) {
