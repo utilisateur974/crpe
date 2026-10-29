@@ -1,59 +1,82 @@
 # Source des références littéraires
 
-Le classeur fourni `référence.xlsx` contient **16 références** dans la feuille `Feuil1`, lignes 2 à 17. La copie de travail est `documents/references-litteraires.xlsx` ; elle est exclue de Git. Le contenu est stocké dans la base SQLite du projet, avec son empreinte SHA-256 et la provenance de chaque ligne.
+La source active est **`references_CRPE_enrichies_word_ghibli.xlsx`**, feuille `Feuil1`, lignes 2 à 171. Elle contient **170 fiches pour 146 œuvres** et remplace les 16 fiches de la première version.
 
-## Structure
+La copie de travail est `documents/references_CRPE_enrichies_word_ghibli.xlsx`, exclue de Git. Les cinq colonnes sont conservées dans SQLite avec l’empreinte SHA-256 du classeur.
 
-- `literary_sources` : titre de la source, fichier, empreinte et nombre de feuilles. Cette table décrit les classeurs, distinctement des sources PDF à pagination.
-- `literary_references` : titre, auteur/réalisateur, présentation de la référence, interprétation, thème de rattachement au domaine, texte et intitulé Excel d’origine, feuille et numéro de ligne.
-- `literary_reference_themes` : thèmes multiples, avec leur ordre d’origine.
-- `literary_reference_catalog` : vue de consultation avec la source et l’état du contenu.
+## Remplacement des tables
 
-La colonne `domain_id` rattache toutes ces entrées au domaine `references`. Les thèmes ne sont pas inventés lorsque la colonne C du classeur est vide.
+- `006-replace-literary-references-schema.sql` supprime la vue et les tables littéraires dépendantes, puis recrée `literary_sources`, `literary_references`, `literary_reference_themes` et `literary_reference_catalog`.
+- `007-enriched-literary-references-data.sql` importe uniquement le nouveau classeur.
+- Le schéma passe en version 3. Les anciennes migrations restent dans l’historique pour permettre la reconstruction de la base ; leurs anciennes références ne figurent plus dans les tables actives.
+- Une sauvegarde locale préalable est conservée dans `artifacts/backups/`.
+- Les données scientifiques et leurs associations de quiz restent identiques à la sauvegarde.
+
+Les nouvelles fiches ont des identifiants `literature-enriched-rNNN`. Les anciennes évaluations locales ne sont donc pas affectées à une autre œuvre ou à un argument différent.
+
+## Les cinq colonnes du classeur
+
+| Colonne Excel | Stockage |
+| --- | --- |
+| Référence | `source_reference` conserve l’intitulé original ; `title`, `creator` et `publication_date` en extraient le titre, la signature et la date |
+| Phrase réutilisable | `source_text` conserve le texte intégral ; `reference_text` et `analysis_text` en séparent les deux parties |
+| Thèmes possibles | `source_themes` conserve la cellule originale ; `literary_reference_themes` contient les thèmes individuels |
+| Réplique / extrait – locuteur + phrase complète | `excerpt_text` conserve intégralement le locuteur, l’extrait ou la mention « À compléter » |
+| Source de l’extrait | `excerpt_source` conserve l’URL ou la note de provenance |
+
+Les dates restent du texte : par exemple `vers 700 av. J.-C.`, `Antiquité` ou `XXe siècle` sont conservés sans conversion. Les feuilles, lignes et positions de chaque fiche sont enregistrées. `literary_sources` contient une seule source active, son nom de fichier et son empreinte.
 
 ```sql
-SELECT title AS titre, creator AS auteur_realisateur,
-       reference_text AS presentation, analysis_text AS interpretation,
-       sheet_name AS feuille, source_row AS ligne, is_complete AS contenu_complet
+SELECT title, creator, publication_date, reference_text, analysis_text,
+       excerpt_text, excerpt_source, sheet_name, source_row
 FROM literary_reference_catalog
 ORDER BY position;
 ```
 
-Les sources et références littéraires sont ajoutées par les migrations `004-literary-references-schema.sql` et `005-literary-references-data.sql`. Le schéma SQLite passe à la version 2 ; les définitions scientifiques et leurs associations QCM sont conservées.
+## Présentation et interprétation
 
-## Les deux parties d’une référence
+Le texte est séparé à la première occurrence de « Cette référence ». Cela conserve aussi les variantes du fichier : « Cette référence montre que… », « Cette référence permet d’interroger… », « Cette référence peut être mobilisée pour montrer que… », etc.
 
-La présentation commence par **« On peut également penser… »**, puis reprend l’œuvre et son développement. L’interprétation commence par **« Cette référence montre que… »**, avec la contraction **« qu’… »** lorsque le texte l’utilise.
+Si la première partie ne comporte pas « On peut également penser… », cette introduction est construite uniquement avec le titre, la signature et la date déjà présents dans le classeur, puis suivie du texte original. Aucun développement ou argument n’est inventé. La cellule d’origine reste conservée intégralement.
 
-Les textes sont découpés à ce second connecteur, sans réécriture des développements. Lorsque la présentation ne contient pas de connecteur, une identification est construite uniquement à partir du titre et de la signature déjà présents dans le classeur, puis suivie de la description originale. Cela concerne les entrées de Goya, Picasso, Monet, Yourcenar et Eco. Les intitulés de titre et de signature sont structurés depuis les colonnes A et B ; l’intitulé original est toujours conservé.
+Une même œuvre peut servir plusieurs arguments. Les huit fiches de **Princesse Mononoké** sont ainsi conservées séparément ; elles ne sont pas fusionnées selon leur titre.
 
-Le classeur comporte aussi des tableaux et un texte religieux. Ils sont conservés parmi les références fournies. L’étiquette « Auteur / réalisateur » peut donc désigner l’artiste ou la signature du texte. Pour la Passion du Christ, « Matthieu » est repris de l’intitulé « Évangile selon Matthieu » présent dans la phrase source ; il ne s’agit pas d’une vérification externe de l’attribution.
+## Données à compléter et extraits
 
-## Contenu incomplet
+- **169 développements** contiennent les deux parties.
+- **1 interprétation** manque : *Le 3 mai 1808 à Madrid*, Francisco de Goya, ligne 12. Elle reste `NULL`.
+- **83 fiches** contiennent un extrait fourni par le classeur.
+- **80 fiches** contiennent une citation à compléter. Leur mention est conservée et affichée comme telle.
+- **7 fiches** indiquent qu’il n’y a aucun locuteur, notamment pour les œuvres picturales.
 
-**13 références disposent des deux parties et 3 restent à compléter :**
+La complétude du développement est distincte de celle de la citation. La vue fournit `is_complete` pour les deux parties et `excerpt_status` (`provided`, `missing`, `not-applicable`) pour l’extrait.
 
-| Ligne | Œuvre | Éléments absents |
-| --- | --- | --- |
-| 12 | El tres de mayo de 1808 en Madrid — Francisco de Goya | Interprétation « Cette référence montre que… » |
-| 15 | Comment Wang-Fô fut sauvé — Marguerite Yourcenar | Développement de présentation et interprétation |
-| 17 | Le Nom de la rose — Umberto Eco | Interprétation « Cette référence montre que… » ; la courte note originale est conservée comme présentation |
-
-Les interprétations manquantes restent `NULL`. L’application les affiche « À compléter » et n’ajoute aucun argument absent du classeur. Les références incomplètes restent consultables et disponibles en flashcards.
+Les extraits et leurs attributions sont importés du classeur, sans vérification externe de leur exactitude. Une note comme « citation à vérifier » reste visible. Les URL HTTP/HTTPS peuvent être ouvertes depuis la consultation ; elles sont affichées en texte dans les flashcards pour éviter des liens imbriqués dans le bouton de retournement.
 
 ## Consultation et révision
 
-La page `/references` permet de rechercher dans les titres, signatures, textes et thèmes, et de filtrer par auteur/réalisateur, thème et état du contenu. Chaque fiche présente les deux parties et la ligne du classeur. « Réviser cette référence » ouvre une session limitée à cette fiche.
+`/references` affiche le titre, la signature, la date, les thèmes, les deux parties du développement, l’extrait et sa source, ainsi que la provenance Excel. La recherche couvre aussi les dates et les extraits. Les filtres d’auteur/réalisateur, de thème et d’état du développement restent disponibles.
 
-Le domaine Références fournit 16 flashcards. Le recto affiche le titre et la signature ; le verso reprend les deux parties, ou signale le contenu à compléter. La maîtrise est sauvegardée avec des identifiants propres aux références. Aucun QCM ni distracteur n’est fabriqué pour ces textes.
+Le domaine Références fournit 170 flashcards. Chaque variante possède sa propre progression. Les sciences conservent leurs 120 cartes et leurs 108 questions QCM. Aucun QCM n’est fabriqué à partir des références littéraires.
 
 ## Reproduire l’import
 
 ```powershell
 python -m pip install --target .tools/python -r scripts/requirements-references.txt
-python -X utf8 scripts/import_references.py documents/references-litteraires.xlsx --output artifacts/extraction/references-verifiees.sql
+python -X utf8 scripts/import_enriched_references.py documents/references_CRPE_enrichies_word_ghibli.xlsx --output artifacts/extraction/references-enrichies-verifiees.sql
 ```
 
-Le profil contrôle la feuille, les en-têtes, les 16 identifications de lignes et le type texte des cellules ; les formules sont refusées. Il est spécifique au classeur fourni. Pour un classeur modifié ou une nouvelle source, adapter le profil et créer une nouvelle migration plutôt que modifier une migration déjà appliquée.
+L’importeur vérifie la feuille, les cinq en-têtes, le type texte des cellules et la forme « Titre – Signature (date) ». Il refuse les formules. Il conserve une fiche par ligne sans déduplication des œuvres.
 
-Appliquer les nouvelles migrations avec `npm.cmd run db:migrate`, puis compiler et redéployer le projet. Aucun outil Python n’est requis pour consulter le site ou reconstruire SQLite à partir des migrations déjà livrées.
+La sortie peut être comparée à la migration 007. Les cinq cellules de chaque ligne, les thèmes et l’empreinte du fichier ont été comparés à la base après l’import.
+
+```powershell
+npm.cmd run db:migrate
+npm.cmd test
+python -X utf8 -m unittest discover -s tests/python
+npm.cmd run build
+```
+
+Les migrations déjà appliquées ne doivent pas être modifiées. Pour remplacer à nouveau les données, préparer une nouvelle migration, vérifier le classeur et réaliser une sauvegarde. Les outils Python et les fichiers Excel ne sont pas requis pour consulter le site ou reconstruire la base à partir des migrations livrées.
+
+Les modifications restent locales jusqu’à leur envoi sur GitHub et au redéploiement du site.

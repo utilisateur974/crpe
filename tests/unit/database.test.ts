@@ -21,7 +21,7 @@ describe('Base SQLite des définitions', () => {
     expect(content.definitions).toHaveLength(120)
     expect(new Set(content.definitions.map(item => item.chapter)).size).toBe(17)
     expect(content.cards.filter(card => card.domain === 'sciences')).toHaveLength(120)
-    expect(content.cards).toHaveLength(136)
+    expect(content.cards).toHaveLength(290)
     expect(content.cards.every(card => !card.demo && !card.id.startsWith('demo-'))).toBe(true)
     expect(content.definitions.every(item => item.sourcePage >= 4 && item.sourcePage <= 39 && item.sourceExcerpt.length > 0)).toBe(true)
   })
@@ -73,7 +73,7 @@ describe('Base SQLite des définitions', () => {
     const { cards, domains, getDomainCards } = await import('../../src/services/content')
     expect(domains.map(domain => domain.id)).toEqual(['sciences', 'references'])
     expect(getDomainCards('sciences')).toHaveLength(120)
-    expect(getDomainCards('references')).toHaveLength(16)
+    expect(getDomainCards('references')).toHaveLength(170)
     expect(cards.filter(card => card.domain === 'sciences').every(card => card.question === card.concept && card.answer.length > 0)).toBe(true)
   })
   it('les migrations reconstruisent la base avec les contraintes et les trois colonnes demandées', () => {

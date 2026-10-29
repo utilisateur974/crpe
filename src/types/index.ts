@@ -32,6 +32,7 @@ export type LiteraryReference = {
   domain: string
   title: string
   creator: string
+  publicationDate: string
   referenceText: string
   analysisText: string | null
   themes: string[]
@@ -41,6 +42,10 @@ export type LiteraryReference = {
   sourceRow: number
   originalLabel: string
   originalText: string | null
+  originalThemes: string | null
+  excerptText: string | null
+  excerptSource: string | null
+  excerptStatus: 'provided' | 'missing' | 'not-applicable'
   isComplete: boolean
 }
 export type Definition = {

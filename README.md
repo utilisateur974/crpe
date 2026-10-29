@@ -4,7 +4,7 @@ Application en français avec React, TypeScript, Vite, Tailwind CSS, Motion, Rea
 
 Le PDF *Le corps humain et la santé* a été intégré : **120 notions dans 17 chapitres**, issues des encadrés « À retenir ». Les 118 entrées donnent 120 notions après séparation des trois rôles des nutriments. Les textes sont conservés avec leur page et leur extrait d’origine. Une incohérence du livret sur le glucagon (page 39) est signalée dans l’interface.
 
-Le classeur `référence.xlsx` fournit aussi **16 références littéraires et artistiques** : titre, auteur/réalisateur, présentation « On peut également penser… », interprétation « Cette référence montre que… » et thèmes. Les 3 entrées incomplètes sont signalées, sans ajout de développement absent du classeur.
+Le classeur `references_CRPE_enrichies_word_ghibli.xlsx` remplace la première liste et fournit **170 fiches pour 146 œuvres** : titre, auteur/réalisateur, date, présentation, interprétation, thèmes, réplique/extrait et source. Une interprétation et 80 citations restent à compléter dans le fichier ; ces indications sont conservées. Les différentes utilisations argumentatives d’une même œuvre restent des fiches distinctes.
 
 ## Lancer le projet
 
@@ -56,7 +56,7 @@ La base conserve aussi le domaine, la rubrique, l’ordre, la page PDF, le numé
 
 Voir **[database/README.md](database/README.md)** pour la liste des chapitres, le schéma, la méthode d’extraction et les commandes de reproduction.
 
-Voir **[database/references-litteraires.md](database/references-litteraires.md)** pour la source des 16 références, les textes incomplets, les tables SQLite et la reproduction de l’import Excel. Le domaine Références dispose maintenant de 16 flashcards dont le recto présente le titre et la signature, et le verso les deux parties du texte.
+Voir **[database/references-litteraires.md](database/references-litteraires.md)** pour la source des 170 fiches, les textes incomplets, les tables SQLite et la reproduction de l’import Excel. Le domaine Références dispose de 170 flashcards : titre, signature et date au recto ; présentation, interprétation, extrait et source au verso.
 
 ```powershell
 npm.cmd run db:migrate
@@ -97,7 +97,9 @@ tests/
 
 Le PDF local est conservé dans `documents/corps-humain-sante.pdf`, exclu de Git et du déploiement. Son import initial est reproductible ; les nouveaux PDF peuvent demander un profil d’extraction différent.
 
-Le classeur local est conservé dans `documents/references-litteraires.xlsx`, également exclu de Git. Les textes importés sont conservés dans SQLite. Les nouveaux classeurs peuvent demander un profil d’import différent.
+Le classeur actif est `documents/references_CRPE_enrichies_word_ghibli.xlsx`, exclu de Git. Les textes importés sont conservés dans SQLite. `scripts/import_enriched_references.py` importe les cinq colonnes, accepte les variantes de connecteurs et préserve les dates sous forme de texte. L’ancien classeur et son importeur sont conservés pour l’historique, mais leurs données ont été remplacées en base par les migrations 006 et 007.
+
+Avant le remplacement, une sauvegarde locale a été enregistrée dans `artifacts/backups/` (exclu de Git). Les 120 définitions scientifiques et les 324 associations de quiz ont été comparées à cette sauvegarde. Les nouvelles références utilisent des identifiants distincts : les anciennes évaluations littéraires ne sont pas attribuées automatiquement aux nouveaux développements.
 
 ## Progression
 

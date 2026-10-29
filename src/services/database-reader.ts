@@ -10,7 +10,7 @@ function rows(database: Database, query: string) {
 }
 
 export function readDatabaseContent(database: Database): DatabaseContent {
-  if (database.exec('PRAGMA user_version')[0]?.values[0][0] !== 2) throw new Error('Version de base de données incompatible. Appliquer les migrations du projet.')
+  if (database.exec('PRAGMA user_version')[0]?.values[0][0] !== 3) throw new Error('Version de base de données incompatible. Appliquer les migrations du projet.')
   const domainRows = rows(database, 'SELECT id, name, description, icon, color, note FROM domains ORDER BY position, id')
   const definitionRows = rows(database, 'SELECT * FROM definition_catalog ORDER BY chapter_position, position, id')
   const distractorRows = rows(database, 'SELECT definition_id, distractor_id FROM quiz_distractors ORDER BY definition_id, position')
@@ -18,11 +18,16 @@ export function readDatabaseContent(database: Database): DatabaseContent {
   const themeRows = rows(database, 'SELECT reference_id, theme FROM literary_reference_themes ORDER BY reference_id, position')
   const references: LiteraryReference[] = referenceRows.map(row => ({
     id: String(row.id), domain: String(row.domain_id), title: String(row.title), creator: String(row.creator),
+    publicationDate: String(row.publication_date),
     referenceText: String(row.reference_text), analysisText: row.analysis_text === null ? null : String(row.analysis_text),
     themes: themeRows.filter(theme => theme.reference_id === row.id).map(theme => String(theme.theme)),
     source: String(row.source_title), sourceFilename: String(row.source_filename),
     sheetName: String(row.sheet_name), sourceRow: Number(row.source_row),
     originalLabel: String(row.source_reference), originalText: row.source_text === null ? null : String(row.source_text),
+    originalThemes: row.source_themes === null ? null : String(row.source_themes),
+    excerptText: row.excerpt_text === null ? null : String(row.excerpt_text),
+    excerptSource: row.excerpt_source === null ? null : String(row.excerpt_source),
+    excerptStatus: row.excerpt_status as LiteraryReference['excerptStatus'],
     isComplete: row.is_complete === 1,
   }))
   const definitions: Definition[] = definitionRows.map(row => ({

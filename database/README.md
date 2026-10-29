@@ -2,7 +2,7 @@
 
 La source applicative est **`crpe.sqlite`**, une base SQLite réelle. Les fichiers JSON fictifs de la première version sont conservés dans `tests/fixtures/` et ne sont plus importés par l’application.
 
-La base contient également **16 références littéraires et artistiques** issues du classeur fourni, dans des tables dédiées. Leurs deux parties, thèmes, textes originaux et lignes de provenance sont décrits dans [references-litteraires.md](references-litteraires.md). Les trois interprétations manquantes restent à compléter. Le schéma est en version 2 et contient 136 cartes au total : 120 notions scientifiques et 16 références.
+La base contient également **170 fiches littéraires et artistiques pour 146 œuvres**, issues du nouveau classeur enrichi. Leurs développements, dates, thèmes, extraits, sources et lignes de provenance sont décrits dans [references-litteraires.md](references-litteraires.md). Une interprétation et 80 citations restent à compléter dans le fichier. Le schéma est en version 3 et contient 290 cartes au total : 120 notions scientifiques et 170 fiches de référence. Les anciennes tables littéraires ont été supprimées puis recréées par la migration 006, avant l’import du nouveau contenu par la migration 007.
 
 ## Contenu importé
 

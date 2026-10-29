@@ -1,4 +1,5 @@
 import type { LiteraryReference } from '../types'
+import { ReferenceExcerpt } from './ReferenceExcerpt'
 
 function Passage({ text, prefix, className }: { text: string; prefix: string; className: string }) {
   return <span className={className}>{text.startsWith(prefix)
@@ -6,12 +7,13 @@ function Passage({ text, prefix, className }: { text: string; prefix: string; cl
     : text}</span>
 }
 
-export function ReferencePassages({ reference }: { reference: LiteraryReference }) {
+export function ReferencePassages({ reference, links = true }: { reference: LiteraryReference; links?: boolean }) {
   return <span className="reference-passages">
     <Passage text={reference.referenceText} prefix="On peut également penser" className="reference-presentation" />
     {reference.analysisText
-      ? <Passage text={reference.analysisText} prefix="Cette référence montre" className="reference-analysis" />
+      ? <Passage text={reference.analysisText} prefix="Cette référence" className="reference-analysis" />
       : <span className="reference-missing"><strong>Cette référence montre que…</strong>Interprétation non renseignée dans le classeur.</span>}
     {!reference.originalText && <span className="reference-missing">Le classeur contient uniquement l’identification de l’œuvre. Son développement reste à compléter.</span>}
+    <ReferenceExcerpt reference={reference} links={links} />
   </span>
 }

@@ -9,6 +9,18 @@
 .reference-entry h2 { font-size: 22px; line-height: 1.5; overflow-wrap: anywhere; }
 .reference-creator { font-size: 13px; color: var(--ink); margin-top: 10px; line-height: 1.7; }
 .reference-creator > span { display: inline-block; color: var(--muted); font-size: 10px; margin-right: 9px; }
+.reference-date { color: var(--ink); font-size: 12px; margin-top: 7px; line-height: 1.8; }
+.reference-date > span { color: var(--muted); font-size: 10px; margin-right: 9px; }
+.reference-counts { flex-wrap: wrap; }
+.reference-counts .section-meta { white-space: normal; line-height: 1.8; }
+.reference-excerpt { display: block; background: var(--sage-soft); border-radius: 7px; padding: 14px 16px; font-size: 12px; line-height: 1.9; }
+.reference-excerpt > strong { display: block; color: var(--sage); font-size: 11px; margin-bottom: 6px; }
+.reference-excerpt-text { display: block; white-space: pre-line; }
+.reference-excerpt-source { display: block; color: var(--muted); font-size: 10px; line-height: 1.8; margin-top: 9px; overflow-wrap: anywhere; }
+.reference-excerpt-source a { color: var(--sage); text-decoration: underline; text-underline-offset: 3px; }
+.reference-excerpt.missing { background: var(--terra-soft); }
+.reference-excerpt.missing > strong { color: var(--terra); }
+.reference-excerpt.not-applicable { background: var(--page); }
 .reference-status { display: inline-block; flex-shrink: 0; padding: 5px 9px; border-radius: 6px; font-size: 10px; white-space: nowrap; }
 .reference-status.complete { background: var(--sage-soft); color: var(--sage); }
 .reference-status.incomplete { background: var(--terra-soft); color: var(--terra); }

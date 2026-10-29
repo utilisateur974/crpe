@@ -20,11 +20,12 @@ export function ReferencesPage() {
   const filtered = references.filter(item => (!creator || item.creator === creator)
     && (!theme || (theme === '__none__' ? item.themes.length === 0 : item.themes.includes(theme)))
     && (!status || (status === 'complete' ? item.isComplete : !item.isComplete))
-    && normalize([item.title, item.creator, item.referenceText, item.analysisText ?? '', ...item.themes].join(' ')).includes(normalize(query.trim())))
+    && normalize([item.title, item.creator, item.publicationDate, item.referenceText, item.analysisText ?? '', item.excerptText ?? '', ...item.themes].join(' ')).includes(normalize(query.trim())))
   const pageCount = Math.ceil(filtered.length / PAGE_SIZE)
   const currentPage = Math.min(page, Math.max(0, pageCount - 1))
   const visible = filtered.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE)
   const incomplete = references.filter(item => !item.isComplete).length
+  const missingExcerpts = references.filter(item => item.excerptStatus === 'missing').length
   function update(key: string, value: string) {
     const next = new URLSearchParams(params)
     value ? next.set(key, value) : next.delete(key)
@@ -40,9 +41,9 @@ export function ReferencesPage() {
       <div><label htmlFor="reference-theme">Thème</label><select id="reference-theme" value={theme} onChange={event => update('theme', event.target.value)}><option value="">Tous les thèmes</option>{themes.map(value => <option key={value}>{value}</option>)}<option value="__none__">Sans thème renseigné</option></select></div>
       <div><label htmlFor="reference-status">État du contenu</label><select id="reference-status" value={status} onChange={event => update('etat', event.target.value)}><option value="">Toutes les références</option><option value="complete">Complètes</option><option value="incomplete">À compléter</option></select></div>
     </div>
-    <div className="section-heading"><h2>{plural(filtered.length, 'référence')}</h2><span className="section-meta">{incomplete} à compléter dans la source</span></div>
+    <div className="section-heading reference-counts"><h2>{plural(filtered.length, 'référence')}</h2><span className="section-meta">{incomplete} développement à compléter · {missingExcerpts} extraits à compléter</span></div>
     {visible.length ? <div className="reference-list">{visible.map(item => <article key={item.id} className="reference-entry surface">
-      <header><div><h2>{item.title}</h2><p className="reference-creator"><span>Auteur / réalisateur</span>{item.creator}</p></div><span className={`reference-status ${item.isComplete ? 'complete' : 'incomplete'}`}>{item.isComplete ? 'Complète' : 'À compléter'}</span></header>
+      <header><div><h2>{item.title}</h2><p className="reference-creator"><span>Auteur / réalisateur</span>{item.creator}</p><p className="reference-date"><span>Date indiquée dans le classeur</span>{item.publicationDate}</p></div><span className={`reference-status ${item.isComplete ? 'complete' : 'incomplete'}`}>{item.isComplete ? 'Développement complet' : 'À compléter'}</span></header>
       <div className="category-tags">{item.themes.length ? item.themes.map(value => <span key={value}>{value}</span>) : <span>Thèmes non renseignés</span>}</div>
       <ReferencePassages reference={item} />
       <footer><span>Source : {item.sourceFilename} · {item.sheetName}, ligne {item.sourceRow}</span><Link className="text-link" to={`/domaine/references/flashcards?reference=${encodeURIComponent(item.id)}`}>Réviser cette référence <ArrowRight size={15} /></Link></footer>
